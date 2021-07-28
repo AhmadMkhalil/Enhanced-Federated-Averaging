@@ -29,11 +29,8 @@ if __name__ == '__main__':
     args = args_parser()
     exp_details(args)
 
-    if args.gpu:
-        torch.cuda.set_device(args.gpu_id)
-    device = 'cuda' if args.gpu else 'cpu'
-
-    # load dataset and user groups
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f'device is: {device}')
     train_dataset, test_dataset, user_groups = get_dataset(args)
 
     # BUILD MODEL
@@ -71,12 +68,12 @@ if __name__ == '__main__':
     train_loss, train_accuracy = [], []
     val_acc_list, net_list = [], []
     cv_loss, cv_acc = [], []
-    data, data_classes = [], []
     print_every = 1
     val_loss_pre, counter = 0, 0
 
     for epoch in tqdm(range(args.epochs)):
         local_weights, local_losses = [], []
+        data, data_classes = [], []
         print(f'\n | Global Training Round : {epoch + 1} |\n')
 
         global_model.train()
@@ -97,13 +94,16 @@ if __name__ == '__main__':
             ids = []
             for k in user_groups[idx]:
                 ids.append(int(k))
-            user_data_classes = set(int(train_dataset.targets[i]) for i in ids)
+            user_data_classes = set(int(train_dataset.train_labels[i]) for i in ids)
             data_classes.append(user_data_classes)
 
         # update global weights
-        # global_weights = average_weights(local_weights)
-        global_weights = weighted_averages_n_samples(local_weights, data)
-        # global_weights = weighted_averages_n_classes(local_weights, data_classes)
+        if args.avg_type == 'avg':
+            global_weights = average_weights(local_weights)
+        elif args.avg_type == 'avg_n_samples':
+            global_weights = weighted_averages_n_samples(local_weights, data)
+        else:
+            global_weights = weighted_averages_n_classes(local_weights, data_classes)
 
         # update global weights
         global_model.load_state_dict(global_weights)
@@ -159,9 +159,9 @@ if __name__ == '__main__':
     plt.plot(range(len(train_loss)), train_loss, color='r')
     plt.ylabel('Training loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_loss.png'.
+    plt.savefig('../save/fed_{}_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_{}_loss.png'.
                 format(current_time, args.dataset, args.model, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs))
+                       args.iid, args.local_ep, args.local_bs, args.avg_type))
 
     # Plot Average Accuracy vs Communication rounds
     plt.figure()
@@ -169,6 +169,6 @@ if __name__ == '__main__':
     plt.plot(range(len(train_accuracy)), train_accuracy, color='k')
     plt.ylabel('Average Accuracy')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_acc.png'.
+    plt.savefig('../save/fed_{}_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_{}_acc.png'.
                 format(current_time, args.dataset, args.model, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs))
+                       args.iid, args.local_ep, args.local_bs, args.avg_type))

@@ -105,31 +105,15 @@ def weighted_averages_n_samples(w, data):
     """
     Returns the average of the weights.
     """
+    sum_of_data = sum(data)
     w_avg = copy.deepcopy(w[0])
     for key in w_avg.keys():
         w_avg[key] = 0
         for i in range(0, len(w)):
             client_data = data[i]
-            percentage = client_data / sum(data)
-            coco1 = w[i][key]
-            coco2 = w[i][key] * percentage
+            percentage = client_data / sum_of_data
             w_avg[key] += w[i][key] * percentage
     return w_avg
-
-# unmodified
-# def weighted_averages_n_samples(w, data):
-#     """
-#     Returns the average of the weights.
-#     """
-#     w_avg = copy.deepcopy(w[0])
-#     for key in w_avg.keys():
-#         # w_avg[key] = 0
-#         for i in range(0, len(w)):
-#             client_data = data[i]
-#             percentage = client_data / sum(data)
-#             w_avg[key] += torch.mul(w[i][key], percentage)
-#             # w_avg[key] = torch.div(w_avg[key], sum(data))
-#     return w_avg
 
 
 def weighted_averages_n_classes(w, classes):
@@ -142,11 +126,11 @@ def weighted_averages_n_classes(w, classes):
 
     w_avg = copy.deepcopy(w[0])
     for key in w_avg.keys():
+        w_avg[key] = 0
         for i in range(0, len(w)):
             client_classes = classes[i]
             percentage = len(client_classes) / len_of_classes_list
-            w_avg[key] += torch.mul(w[i][key], percentage)
-            # w_avg[key] = torch.div(w_avg[key], sum(data))
+            w_avg[key] += w[i][key] * percentage
     return w_avg
 
 
