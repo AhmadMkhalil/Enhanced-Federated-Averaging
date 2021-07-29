@@ -9,9 +9,12 @@ import time
 import pickle
 import numpy as np
 from tqdm import tqdm
-
+import os
 import torch
 from tensorboardX import SummaryWriter
+import matplotlib
+import matplotlib.pyplot as plt
+import yaml
 
 from options import args_parser
 from update import LocalUpdate, test_inference
@@ -109,7 +112,7 @@ if __name__ == '__main__':
         global_model.load_state_dict(global_weights)
 
         loss_avg = sum(local_losses) / len(local_losses)
-        train_loss.append(loss_avg)
+        train_loss.append(round(loss_avg, 3))
 
         # Calculate avg training accuracy over all users at every epoch
         list_acc, list_loss = [], []
@@ -120,7 +123,7 @@ if __name__ == '__main__':
             acc, loss = local_model.inference(model=global_model)
             list_acc.append(acc)
             list_loss.append(loss)
-        train_accuracy.append(sum(list_acc) / len(list_acc))
+        train_accuracy.append(round((sum(list_acc) / len(list_acc)), 3))
         # print global training loss after every 'i' rounds
         if (epoch + 1) % print_every == 0:
             print(f' \nAvg Training Stats after {epoch + 1} global rounds:')
@@ -144,14 +147,15 @@ if __name__ == '__main__':
 
     print('\n Total Run Time: {0:0.4f}'.format(time.time() - start_time))
 
-    # PLOTTING (optional)
-    import matplotlib
-    import matplotlib.pyplot as plt
+    #######################   PLOTTING & args & results saving    ###################################
 
     matplotlib.use('Agg')
     now = datetime.now()
-
-    current_time = now.strftime("%H_%M_%S")
+    current_time = now.strftime("%Y_%m_%d_%H_%M")
+    my_path = os.getcwd()
+    full_path = '{}/../save/{}/{}/{}/{}/{}'.format(my_path, args.dataset, "iid" if args.iid == 1 else "noniid",
+                                                   args.avg_type, args.epochs, current_time)
+    os.makedirs(full_path)
 
     # Plot Loss curve
     plt.figure()
@@ -159,9 +163,7 @@ if __name__ == '__main__':
     plt.plot(range(len(train_loss)), train_loss, color='r')
     plt.ylabel('Training loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_{}_loss.png'.
-                format(current_time, args.dataset, args.model, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.avg_type))
+    plt.savefig(f'{full_path}/training_loss.png')
 
     # Plot Average Accuracy vs Communication rounds
     plt.figure()
@@ -169,6 +171,39 @@ if __name__ == '__main__':
     plt.plot(range(len(train_accuracy)), train_accuracy, color='k')
     plt.ylabel('Average Accuracy')
     plt.xlabel('Communication Rounds')
-    plt.savefig('../save/fed_{}_{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}]_{}_acc.png'.
-                format(current_time, args.dataset, args.model, args.epochs, args.frac,
-                       args.iid, args.local_ep, args.local_bs, args.avg_type))
+    plt.savefig(f'{full_path}/training_accuracy.png')
+
+    # yaml file with all data and results
+    data = dict(
+        epochs=args.epochs,
+        num_users=args.num_users,
+        frac=args.frac,
+        local_ep=args.local_ep,
+        local_bs=args.local_bs,
+        lr=args.lr,
+        momentum=args.momentum,
+        model=args.model,
+        kernel_num=args.kernel_num,
+        kernel_sizes=args.kernel_sizes,
+        num_channels=args.num_channels,
+        norm=args.norm,
+        num_filters=args.num_filters,
+        max_pool=args.max_pool,
+        dataset=args.dataset,
+        num_classes=args.num_classes,
+        optimizer=args.optimizer,
+        iid=args.iid,
+        unequal=args.unequal,
+        verbose=args.verbose,
+        seed=args.seed,
+        avg_type=args.avg_type,
+        train_accuracy=train_accuracy,
+        train_loss=train_loss,
+        avg_train_accuracy=round(train_accuracy[-1], 3),
+        avg_train_loss=round((train_loss[-1] / 100), 3),
+        test_acc=round(test_acc, 3),
+        test_loss=round((test_loss / 100), 3),
+    )
+
+    with open(f'{full_path}/data.yml', 'w') as outfile:
+        yaml.dump(data, outfile, default_flow_style=False)

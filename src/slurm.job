@@ -1,0 +1,47 @@
+
+#!/bin/bash
+#SBATCH --account=researcher
+#SBATCH --ntasks=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=4
+#SBATCH --mem-per-cpu=8G
+#SBATCH --job-name="FL test"
+#SBATCH --gres=gpu:2
+#SBATCH --output=out-%j.txt
+#SBATCH --error=err-%j.txt
+
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+python federated_main.py --avg_type=avg_n_samples
+
+python federated_main.py --avg_type=avg
+python federated_main.py --avg_type=avg
+python federated_main.py --avg_type=avg
+python federated_main.py --avg_type=avg
+python federated_main.py --avg_type=avg
+python federated_main.py --avg_type=avg
+python federated_main.py --avg_type=avg
+python federated_main.py --avg_type=avg
+python federated_main.py --avg_type=avg
+python federated_main.py --avg_type=avg
+
+python federated_main.py --avg_type=avg_n_classes
+python federated_main.py --avg_type=avg_n_classes
+python federated_main.py --avg_type=avg_n_classes
+python federated_main.py --avg_type=avg_n_classes
+python federated_main.py --avg_type=avg_n_classes
+python federated_main.py --avg_type=avg_n_classes
+python federated_main.py --avg_type=avg_n_classes
+python federated_main.py --avg_type=avg_n_classes
+python federated_main.py --avg_type=avg_n_classes
+python federated_main.py --avg_type=avg_n_classes
