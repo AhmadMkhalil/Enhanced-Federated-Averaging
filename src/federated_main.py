@@ -69,6 +69,7 @@ if __name__ == '__main__':
 
     # Training
     train_loss, train_accuracy = [], []
+    test_loss_list, test_accuracy_list = [], []
     val_acc_list, net_list = [], []
     cv_loss, cv_acc = [], []
     print_every = 1
@@ -124,36 +125,33 @@ if __name__ == '__main__':
             list_acc.append(acc)
             list_loss.append(loss)
         train_accuracy.append(round((sum(list_acc) / len(list_acc)), 3))
+
+        # Test inference after completion of training
+        test_acc, test_loss = test_inference(args, global_model, test_dataset)
+        test_accuracy_list.append(test_acc)
+        test_loss_list.append(test_loss)
+
         # print global training loss after every 'i' rounds
         if (epoch + 1) % print_every == 0:
             print(f' \nAvg Training Stats after {epoch + 1} global rounds:')
             print(f'Training Loss : {np.mean(np.array(train_loss))}')
             print('Train Accuracy: {:.2f}% \n'.format(100 * train_accuracy[-1]))
-
-    # Test inference after completion of training
-    test_acc, test_loss = test_inference(args, global_model, test_dataset)
-
-    print(f' \n Results after {args.epochs} global rounds of training:')
-    print("|---- Avg Train Accuracy: {:.2f}%".format(100 * train_accuracy[-1]))
-    print("|---- Test Accuracy: {:.2f}%".format(100 * test_acc))
-
-    # Saving the objects train_loss and train_accuracy:
-    file_name = '../save/objects/{}_{}_{}_C[{}]_iid[{}]_E[{}]_B[{}].pkl'. \
-        format(args.dataset, args.model, args.epochs, args.frac, args.iid,
-               args.local_ep, args.local_bs)
-
-    with open(file_name, 'wb') as f:
-        pickle.dump([train_loss, train_accuracy], f)
-
-    print('\n Total Run Time: {0:0.4f}'.format(time.time() - start_time))
+            print("Test Accuracy: {:.2f}%".format(100 * test_acc))
+            print(f'Test Loss: {round((test_loss / 100), 3)}')
 
     #######################   PLOTTING & args & results saving    ###################################
 
     matplotlib.use('Agg')
     now = datetime.now()
+    if args.iid == 1:
+        iidness = "iid"
+    elif args.iid == 0:
+        iidness = "noniid"
+    else:
+        iidness = "extreme"
     current_time = now.strftime("%Y_%m_%d_%H_%M")
     my_path = os.getcwd()
-    full_path = '{}/../save/{}/{}/{}/{}/{}'.format(my_path, args.dataset, "iid" if args.iid == 1 else "noniid",
+    full_path = '{}/../save/{}/{}/{}/{}/{}'.format(my_path, args.dataset, iidness,
                                                    args.avg_type, args.epochs, current_time)
     os.makedirs(full_path)
 
@@ -163,7 +161,7 @@ if __name__ == '__main__':
     plt.plot(range(len(train_loss)), train_loss, color='r')
     plt.ylabel('Training loss')
     plt.xlabel('Communication Rounds')
-    plt.savefig(f'{full_path}/training_loss.png')
+    plt.savefig(f'{full_path}/training_loss.pdf')
 
     # Plot Average Accuracy vs Communication rounds
     plt.figure()
@@ -171,7 +169,21 @@ if __name__ == '__main__':
     plt.plot(range(len(train_accuracy)), train_accuracy, color='k')
     plt.ylabel('Average Accuracy')
     plt.xlabel('Communication Rounds')
-    plt.savefig(f'{full_path}/training_accuracy.png')
+    plt.savefig(f'{full_path}/training_accuracy.pdf')
+
+    plt.figure()
+    plt.title('Testing Loss vs Communication rounds')
+    plt.plot(range(len(test_loss_list)), test_loss_list, color='r')
+    plt.ylabel('Testing loss')
+    plt.xlabel('Communication Rounds')
+    plt.savefig(f'{full_path}/testing_loss.pdf')
+
+    plt.figure()
+    plt.title('Testing Accuracy vs Communication rounds')
+    plt.plot(range(len(test_accuracy_list)), test_accuracy_list, color='k')
+    plt.ylabel('Testing Accuracy')
+    plt.xlabel('Communication Rounds')
+    plt.savefig(f'{full_path}/testing_accuracy.pdf')
 
     # yaml file with all data and results
     data = dict(
@@ -201,8 +213,8 @@ if __name__ == '__main__':
         train_loss=train_loss,
         avg_train_accuracy=round(train_accuracy[-1], 3),
         avg_train_loss=round((train_loss[-1] / 100), 3),
-        test_acc=round(test_acc, 3),
-        test_loss=round((test_loss / 100), 3),
+        test_accuracy_list=test_accuracy_list,
+        test_loss_list=test_loss_list,
     )
 
     with open(f'{full_path}/data.yml', 'w') as outfile:
