@@ -8,8 +8,8 @@ if __name__ == '__main__':
     my_path = os.getcwd()
     dataset = 'emnist'
     iidness = 'noniid'
-    avg_type = 'avg_n_samples'
-    epochs = 10
+    avg_type = 'avg'
+    epochs = 100
 
     full_path = f'{my_path}/{dataset}/{iidness}/{avg_type}/{epochs}/*/*.yml'
     summary_path = f'{my_path}/{dataset}/{iidness}/{avg_type}/{epochs}/'
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     # Plot Loss curve
     plt.figure()
     plt.title('Testing Loss vs Communication rounds')
-    plt.plot(range(len(final_avg_train_loss)), final_avg_train_loss, color='r')
+    plt.plot(range(len(final_avg_test_loss)), final_avg_test_loss, color='r')
     plt.ylabel('Testing loss')
     plt.xlabel('Communication Rounds')
     plt.savefig(f'{summary_path}/summary_testing_loss.pdf')
@@ -87,7 +87,7 @@ if __name__ == '__main__':
     # Plot Testing Accuracy vs Communication rounds
     plt.figure()
     plt.title('Testing Accuracy vs Communication rounds')
-    plt.plot(range(len(final_avg_train_accuracy)), final_avg_train_accuracy, color='k')
+    plt.plot(range(len(final_avg_test_accuracy)), final_avg_test_accuracy, color='k')
     plt.ylabel('Testing Accuracy')
     plt.xlabel('Communication Rounds')
     plt.savefig(f'{summary_path}/summary_testing_accuracy.pdf')
