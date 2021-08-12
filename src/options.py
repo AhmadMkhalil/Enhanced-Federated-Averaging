@@ -60,7 +60,10 @@ def args_parser():
                         help='rounds of early stopping')
     parser.add_argument('--verbose', type=int, default=1, help='verbose')
     parser.add_argument('--seed', type=int, default=1, help='random seed')
-    parser.add_argument('--avg_type', type=str, default='avg_n_samples', help='average type: avg, avg_n_samples, '
-                                                                              'avg_n_classes')
+    parser.add_argument('--avg_type', type=str, default='avg_n_classes', help='average type: avg, avg_n_samples, '
+                                                                    'avg_n_classes')
+    parser.add_argument('--samples_distribution_type', type=str, default='sequential',
+                        help='samples distribution type: '
+                             'random, sequential')
     args = parser.parse_args()
     return args

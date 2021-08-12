@@ -15,6 +15,7 @@ from tensorboardX import SummaryWriter
 import matplotlib
 import matplotlib.pyplot as plt
 import yaml
+import _pickle as pickle
 
 from options import args_parser
 from update import LocalUpdate, test_inference
@@ -34,7 +35,27 @@ if __name__ == '__main__':
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f'device is: {device}')
+
     train_dataset, test_dataset, user_groups = get_dataset(args)
+
+    # as requested in comment
+    # user_groups = {'user_groups': user_groups}
+    with open('user_groups.txt', 'w') as f:
+        for userId in range(0, len(user_groups)):
+            print(f'userId: {userId}', file=f)
+            samples_ids = []
+            samples_classes = []
+            for s in user_groups[userId]:
+                samples_ids.append(int(s))
+            samples_ids.sort()
+
+            for i in samples_ids:
+                samples_classes.append(int(train_dataset.targets[i]))
+            samples_classes.sort()
+            # print(f'samples_ids: {samples_ids}', file=f)
+            print(f'samples_size: {len(samples_classes)}', file=f)
+            print(f'samples_classes: {set(samples_classes)}', file=f)
+
 
     # BUILD MODEL
     if args.model == 'cnn':

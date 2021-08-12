@@ -1,0 +1,300 @@
+userId: 0
+samples_size: 1000
+samples_classes: {0}
+userId: 1
+samples_size: 400
+samples_classes: {0}
+userId: 2
+samples_size: 400
+samples_classes: {0}
+userId: 3
+samples_size: 800
+samples_classes: {0, 42}
+userId: 4
+samples_size: 1700
+samples_classes: {0, 1}
+userId: 5
+samples_size: 2000
+samples_classes: {1, 2}
+userId: 6
+samples_size: 500
+samples_classes: {2}
+userId: 7
+samples_size: 1400
+samples_classes: {2, 3}
+userId: 8
+samples_size: 1300
+samples_classes: {3}
+userId: 9
+samples_size: 1600
+samples_classes: {3, 4}
+userId: 10
+samples_size: 300
+samples_classes: {4}
+userId: 11
+samples_size: 1700
+samples_classes: {4, 5}
+userId: 12
+samples_size: 1800
+samples_classes: {5}
+userId: 13
+samples_size: 1400
+samples_classes: {6}
+userId: 14
+samples_size: 1400
+samples_classes: {6, 7}
+userId: 15
+samples_size: 2000
+samples_classes: {7}
+userId: 16
+samples_size: 300
+samples_classes: {8}
+userId: 17
+samples_size: 1800
+samples_classes: {8}
+userId: 18
+samples_size: 1600
+samples_classes: {8, 9}
+userId: 19
+samples_size: 700
+samples_classes: {9}
+userId: 20
+samples_size: 1600
+samples_classes: {9, 10}
+userId: 21
+samples_size: 1300
+samples_classes: {10, 11}
+userId: 22
+samples_size: 1500
+samples_classes: {11}
+userId: 23
+samples_size: 2000
+samples_classes: {11, 12}
+userId: 24
+samples_size: 1500
+samples_classes: {12, 13}
+userId: 25
+samples_size: 500
+samples_classes: {13}
+userId: 26
+samples_size: 500
+samples_classes: {13}
+userId: 27
+samples_size: 1300
+samples_classes: {13, 14}
+userId: 28
+samples_size: 1600
+samples_classes: {14}
+userId: 29
+samples_size: 1100
+samples_classes: {14, 15}
+userId: 30
+samples_size: 1800
+samples_classes: {15}
+userId: 31
+samples_size: 600
+samples_classes: {16, 15}
+userId: 32
+samples_size: 2000
+samples_classes: {16, 17}
+userId: 33
+samples_size: 400
+samples_classes: {17}
+userId: 34
+samples_size: 500
+samples_classes: {17}
+userId: 35
+samples_size: 500
+samples_classes: {17}
+userId: 36
+samples_size: 1300
+samples_classes: {17, 18}
+userId: 37
+samples_size: 900
+samples_classes: {18}
+userId: 38
+samples_size: 1200
+samples_classes: {18, 19}
+userId: 39
+samples_size: 400
+samples_classes: {19}
+userId: 40
+samples_size: 500
+samples_classes: {19}
+userId: 41
+samples_size: 1600
+samples_classes: {19, 20}
+userId: 42
+samples_size: 1600
+samples_classes: {20}
+userId: 43
+samples_size: 400
+samples_classes: {20}
+userId: 44
+samples_size: 1400
+samples_classes: {20, 21}
+userId: 45
+samples_size: 1000
+samples_classes: {21}
+userId: 46
+samples_size: 1700
+samples_classes: {21, 22}
+userId: 47
+samples_size: 500
+samples_classes: {22}
+userId: 48
+samples_size: 1400
+samples_classes: {22, 23}
+userId: 49
+samples_size: 300
+samples_classes: {23}
+userId: 50
+samples_size: 1500
+samples_classes: {24, 23}
+userId: 51
+samples_size: 500
+samples_classes: {24}
+userId: 52
+samples_size: 1100
+samples_classes: {24}
+userId: 53
+samples_size: 500
+samples_classes: {24, 25}
+userId: 54
+samples_size: 500
+samples_classes: {25}
+userId: 55
+samples_size: 1700
+samples_classes: {25}
+userId: 56
+samples_size: 600
+samples_classes: {25, 26}
+userId: 57
+samples_size: 1600
+samples_classes: {42, 43}
+userId: 58
+samples_size: 1200
+samples_classes: {43}
+userId: 59
+samples_size: 1500
+samples_classes: {43, 44}
+userId: 60
+samples_size: 700
+samples_classes: {44}
+userId: 61
+samples_size: 500
+samples_classes: {44}
+userId: 62
+samples_size: 800
+samples_classes: {44, 45}
+userId: 63
+samples_size: 600
+samples_classes: {45}
+userId: 64
+samples_size: 1300
+samples_classes: {45, 46}
+userId: 65
+samples_size: 1800
+samples_classes: {46}
+userId: 66
+samples_size: 900
+samples_classes: {26, 46}
+userId: 67
+samples_size: 2000
+samples_classes: {26, 27}
+userId: 68
+samples_size: 1900
+samples_classes: {27, 28}
+userId: 69
+samples_size: 1800
+samples_classes: {28}
+userId: 70
+samples_size: 1600
+samples_classes: {28, 29}
+userId: 71
+samples_size: 1800
+samples_classes: {29, 30}
+userId: 72
+samples_size: 1000
+samples_classes: {30}
+userId: 73
+samples_size: 1000
+samples_classes: {30, 31}
+userId: 74
+samples_size: 2000
+samples_classes: {31}
+userId: 75
+samples_size: 300
+samples_classes: {31}
+userId: 76
+samples_size: 1700
+samples_classes: {32}
+userId: 77
+samples_size: 300
+samples_classes: {32}
+userId: 78
+samples_size: 1600
+samples_classes: {32, 33}
+userId: 79
+samples_size: 1000
+samples_classes: {33}
+userId: 80
+samples_size: 500
+samples_classes: {33, 34}
+userId: 81
+samples_size: 300
+samples_classes: {34}
+userId: 82
+samples_size: 1700
+samples_classes: {34}
+userId: 83
+samples_size: 1000
+samples_classes: {34, 35}
+userId: 84
+samples_size: 900
+samples_classes: {35}
+userId: 85
+samples_size: 700
+samples_classes: {35, 36}
+userId: 86
+samples_size: 1100
+samples_classes: {36}
+userId: 87
+samples_size: 1600
+samples_classes: {36, 37}
+userId: 88
+samples_size: 900
+samples_classes: {37}
+userId: 89
+samples_size: 600
+samples_classes: {37}
+userId: 90
+samples_size: 1000
+samples_classes: {37, 38}
+userId: 91
+samples_size: 700
+samples_classes: {38}
+userId: 92
+samples_size: 700
+samples_classes: {38}
+userId: 93
+samples_size: 1700
+samples_classes: {38, 39}
+userId: 94
+samples_size: 500
+samples_classes: {39}
+userId: 95
+samples_size: 1100
+samples_classes: {40, 39}
+userId: 96
+samples_size: 1800
+samples_classes: {40}
+userId: 97
+samples_size: 1200
+samples_classes: {40, 41}
+userId: 98
+samples_size: 2000
+samples_classes: {41, 42}
+userId: 99
+samples_size: 500
+samples_classes: {42}

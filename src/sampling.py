@@ -158,7 +158,7 @@ def emnist_iid(dataset, num_users):
     return dict_users
 
 
-def emnist_noniid(dataset, num_users):
+def emnist_noniid(dataset, num_users, samples_distribution_type):
     """
     Sample non-I.I.D client data from MNIST dataset
     :param dataset:
@@ -187,7 +187,7 @@ def emnist_noniid(dataset, num_users):
     return dict_users
 
 
-def emnist_noniid_unequal(dataset, num_users):
+def emnist_noniid_unequal(dataset, num_users, samples_distribution_type):
     """
     Sample non-I.I.D client data from MNIST dataset s.t clients
     have unequal amount of data
@@ -223,17 +223,18 @@ def emnist_noniid_unequal(dataset, num_users):
     # Assign the shards randomly to each client
     if sum(random_shard_size) > num_shards:
 
-        for i in range(num_users):
-            # First assign each client 1 shard to ensure every client has
-            # atleast one shard of data
-            rand_set = set(np.random.choice(idx_shard, 1, replace=False))
-            idx_shard = list(set(idx_shard) - rand_set)
-            for rand in rand_set:
-                dict_users[i] = np.concatenate(
-                    (dict_users[i], idxs[rand * num_imgs:(rand + 1) * num_imgs]),
-                    axis=0)
+        if samples_distribution_type == "random":
+            for i in range(num_users):
+                # First assign each client 1 shard to ensure every client has
+                # atleast one shard of data
+                rand_set = set(np.random.choice(idx_shard, 1, replace=False))
+                idx_shard = list(set(idx_shard) - rand_set)
+                for rand in rand_set:
+                    dict_users[i] = np.concatenate(
+                        (dict_users[i], idxs[rand * num_imgs:(rand + 1) * num_imgs]),
+                        axis=0)
 
-        random_shard_size = random_shard_size - 1
+            random_shard_size = random_shard_size - 1
 
         # Next, randomly assign the remaining shards
         for i in range(num_users):
@@ -242,8 +243,11 @@ def emnist_noniid_unequal(dataset, num_users):
             shard_size = random_shard_size[i]
             if shard_size > len(idx_shard):
                 shard_size = len(idx_shard)
-            rand_set = set(np.random.choice(idx_shard, shard_size,
-                                            replace=False))
+            if samples_distribution_type == "sequential":
+                rand_set = set(idx_shard[0:shard_size])
+            elif samples_distribution_type == "random":
+                rand_set = set(np.random.choice(idx_shard, shard_size,
+                                                replace=False))
             idx_shard = list(set(idx_shard) - rand_set)
             for rand in rand_set:
                 dict_users[i] = np.concatenate(
@@ -253,8 +257,11 @@ def emnist_noniid_unequal(dataset, num_users):
 
         for i in range(num_users):
             shard_size = random_shard_size[i]
-            rand_set = set(np.random.choice(idx_shard, shard_size,
-                                            replace=False))
+            if samples_distribution_type == "sequential":
+                rand_set = set(idx_shard[0:shard_size])
+            elif samples_distribution_type == "random":
+                rand_set = set(np.random.choice(idx_shard, shard_size,
+                                                replace=False))
             idx_shard = list(set(idx_shard) - rand_set)
             for rand in rand_set:
                 dict_users[i] = np.concatenate(

@@ -9,7 +9,7 @@ if __name__ == '__main__':
     dataset = 'emnist'
     iidness = 'noniid'
     avg_type = 'avg'
-    epochs = 100
+    epochs = 10
 
     full_path = f'{my_path}/{dataset}/{iidness}/{avg_type}/{epochs}/*/*.yml'
     summary_path = f'{my_path}/{dataset}/{iidness}/{avg_type}/{epochs}/'
