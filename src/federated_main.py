@@ -11,7 +11,7 @@ import numpy as np
 from tqdm import tqdm
 import os
 import torch
-from tensorboardX import SummaryWriter
+# import tensorboardX.SummaryWriter
 import matplotlib
 import matplotlib.pyplot as plt
 import yaml
@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     # define paths
     path_project = os.path.abspath('..')
-    logger = SummaryWriter('../logs')
+    logger = None# SummaryWriter('../logs')
 
     args = args_parser()
     exp_details(args)
@@ -37,10 +37,11 @@ if __name__ == '__main__':
     print(f'device is: {device}')
 
     train_dataset, test_dataset, user_groups = get_dataset(args)
-
+    now = datetime.now()
+    current_time = now.strftime("%Y_%m_%d_%H_%M")
     # as requested in comment
     # user_groups = {'user_groups': user_groups}
-    with open('user_groups.txt', 'w') as f:
+    with open(f'user_groups_{current_time}.txt', 'w') as f:
         for userId in range(0, len(user_groups)):
             print(f'userId: {userId}', file=f)
             samples_ids = []
@@ -50,19 +51,21 @@ if __name__ == '__main__':
             samples_ids.sort()
 
             for i in samples_ids:
-                samples_classes.append(int(train_dataset.targets[i]))
+                if args.dataset != 'cifar':
+                    samples_classes.append(int(train_dataset.train_labels[i]))
+                else:
+                    samples_classes.append(int(train_dataset.targets[i]))
             samples_classes.sort()
             # print(f'samples_ids: {samples_ids}', file=f)
             print(f'samples_size: {len(samples_classes)}', file=f)
             print(f'samples_classes: {set(samples_classes)}', file=f)
-
 
     # BUILD MODEL
     if args.model == 'cnn':
         # Convolutional neural netork
         if args.dataset == 'mnist':
             global_model = CNNMnist(args=args)
-        elif args.dataset == 'emnist':
+        elif args.dataset == 'emnist-balanced':
             global_model = CNNEmnist(args=args)
         elif args.dataset == 'fmnist':
             global_model = CNNFashion_Mnist(args=args)
@@ -98,13 +101,13 @@ if __name__ == '__main__':
 
     for epoch in tqdm(range(args.epochs)):
         local_weights, local_losses = [], []
-        data, data_classes = [], []
+        data, data_classes, samples_per_class = [], [], []
+        classes = []
         print(f'\n | Global Training Round : {epoch + 1} |\n')
 
         global_model.train()
         m = max(int(args.frac * args.num_users), 1)
         idxs_users = np.random.choice(range(args.num_users), m, replace=False)
-
         for idx in idxs_users:
             local_model = LocalUpdate(args=args, dataset=train_dataset,
                                       idxs=user_groups[idx], logger=logger)
@@ -119,17 +122,29 @@ if __name__ == '__main__':
             ids = []
             for k in user_groups[idx]:
                 ids.append(int(k))
-            user_data_classes = set(int(train_dataset.train_labels[i]) for i in ids)
-            data_classes.append(user_data_classes)
+            user_samples_per_class = {i: 0 for i in range(47)}
+            if args.dataset != 'cifar':
+                for i in ids:
+                    if int(train_dataset.train_labels[i]) not in classes:
+                        classes.append(int(train_dataset.train_labels[i]))
+                    user_samples_per_class[int(train_dataset.train_labels[i])] += 1
+            else:
+                user_data_classes = set(int(train_dataset.targets[i]) for i in ids)
 
+            # data_classes.append(user_data_classes)
+            samples_per_class.append(user_samples_per_class)
         # update global weights
         if args.avg_type == 'avg':
             global_weights = average_weights(local_weights)
         elif args.avg_type == 'avg_n_samples':
             global_weights = weighted_averages_n_samples(local_weights, data)
         else:
-            global_weights = weighted_averages_n_classes(local_weights, data_classes)
+            # global_weights = weighted_averages_n_classes(local_weights, data_classes)
+            global_weights = weighted_averages_n_classes(local_weights, samples_per_class, classes, data)
 
+        previous_model = global_model
+        previous_test_accuracy = test_accuracy_list[-1] if len(test_accuracy_list) > 0 else 0
+        previous_test_loss = test_loss_list[-1] if len(test_loss_list) > 0 else 0
         # update global weights
         global_model.load_state_dict(global_weights)
 
@@ -149,8 +164,13 @@ if __name__ == '__main__':
 
         # Test inference after completion of training
         test_acc, test_loss = test_inference(args, global_model, test_dataset)
-        test_accuracy_list.append(test_acc)
-        test_loss_list.append(test_loss)
+        if test_acc > previous_test_accuracy:
+            test_accuracy_list.append(test_acc)
+            test_loss_list.append(test_loss)
+        else:
+            test_accuracy_list.append(previous_test_accuracy)
+            test_loss_list.append(previous_test_loss)
+            global_model = previous_model
 
         # print global training loss after every 'i' rounds
         if (epoch + 1) % print_every == 0:
@@ -163,17 +183,16 @@ if __name__ == '__main__':
     #######################   PLOTTING & args & results saving    ###################################
 
     matplotlib.use('Agg')
-    now = datetime.now()
+
     if args.iid == 1:
         iidness = "iid"
     elif args.iid == 0:
         iidness = "noniid"
     else:
         iidness = "extreme"
-    current_time = now.strftime("%Y_%m_%d_%H_%M")
     my_path = os.getcwd()
     full_path = '{}/../save/{}/{}/{}/{}/{}'.format(my_path, args.dataset, iidness,
-                                                   args.avg_type, args.epochs, current_time)
+                                                   args.avg_type, args.epochs, args.number_of_classes_of_half_of_user, current_time)
     os.makedirs(full_path)
 
     # Plot Loss curve
@@ -236,6 +255,7 @@ if __name__ == '__main__':
         avg_train_loss=round((train_loss[-1] / 100), 3),
         test_accuracy_list=test_accuracy_list,
         test_loss_list=test_loss_list,
+        number_of_classes_of_half_of_user=args.number_of_classes_of_half_of_user
     )
 
     with open(f'{full_path}/data.yml', 'w') as outfile:

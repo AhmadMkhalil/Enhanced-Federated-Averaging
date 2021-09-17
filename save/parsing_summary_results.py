@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     my_path = os.getcwd()
-    dataset = 'emnist'
+    dataset = 'emnist-balanced'
     iidness = 'noniid'
     avg_types = ['avg', 'avg_n_classes', 'avg_n_samples']
     avg_test_accuracy, avg_n_classes_test_accuracy, avg_n_samples_test_accuracy = [], [], []
     avg_test_loss, avg_n_classes_test_loss, avg_n_samples_test_loss = [], [], []
-    epochs = 10
+    epochs = 50
     write_to_summary_path = f'{my_path}/{dataset}/{iidness}/{epochs}'
     i = 0
     for avg_type in avg_types:

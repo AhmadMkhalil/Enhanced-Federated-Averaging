@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     my_path = os.getcwd()
-    dataset = 'emnist'
+    dataset = 'emnist-balanced'
     iidness = 'noniid'
     avg_type = 'avg'
-    epochs = 10
+    epochs = 50
 
     full_path = f'{my_path}/{dataset}/{iidness}/{avg_type}/{epochs}/*/*.yml'
     summary_path = f'{my_path}/{dataset}/{iidness}/{avg_type}/{epochs}/'
