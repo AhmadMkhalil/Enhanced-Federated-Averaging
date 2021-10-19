@@ -9,7 +9,7 @@ def args_parser():
     parser = argparse.ArgumentParser()
 
     # federated arguments (Notation for the arguments followed from paper)
-    parser.add_argument('--epochs', type=int, default=5,
+    parser.add_argument('--epochs', type=int, default=1,
                         help="number of rounds of training")
     parser.add_argument('--num_users', type=int, default=47,
                         help="number of users: K")
@@ -56,7 +56,7 @@ def args_parser():
     parser.add_argument('--unequal', type=int, default=0,
                         help='whether to use unequal data splits for  \
                         non-i.i.d setting (use 0 for equal splits)')
-    parser.add_argument('--number_of_classes_of_half_of_user', type=int, default=0,
+    parser.add_argument('--number_of_classes_of_half_of_user', type=int, default=1,
                         help='in case of 1, that means half of users will have 1 class, and the others will have 47 '
                              'classes distributed in iid way. And this applies for other values, changing the number '
                              'of classes the first half of user have.')
@@ -64,7 +64,7 @@ def args_parser():
                         help='rounds of early stopping')
     parser.add_argument('--verbose', type=int, default=1, help='verbose')
     parser.add_argument('--seed', type=int, default=1, help='random seed')
-    parser.add_argument('--avg_type', type=str, default='avg_n_classes', help='average type: avg, avg_n_samples, '
+    parser.add_argument('--avg_type', type=str, default='avg_n_classes', help='average type: avg_n_samples, '
                                                                               'avg_n_classes')
     parser.add_argument('--samples_distribution_type', type=str, default='sequential',
                         help='samples distribution type: '

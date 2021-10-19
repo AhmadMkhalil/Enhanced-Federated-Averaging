@@ -191,7 +191,7 @@ if __name__ == '__main__':
     else:
         iidness = "extreme"
     my_path = os.getcwd()
-    full_path = '{}/../save/{}/{}/{}/{}/{}'.format(my_path, args.dataset, iidness,
+    full_path = '{}/../save/{}/{}/{}/{}/{}/{}'.format(my_path, args.dataset, iidness,
                                                    args.avg_type, args.epochs, args.number_of_classes_of_half_of_user, current_time)
     os.makedirs(full_path)
 
