@@ -169,9 +169,9 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user, ratio_o
     # default case 0.5
     last_index_of_first_users_group = 23
 
-    if ratio_of_first_users_group == 0.25:
+    if ratio_of_first_users_group == '0.25':
         last_index_of_first_users_group = 12
-    elif ratio_of_first_users_group == 0.75:
+    elif ratio_of_first_users_group == '0.75':
         last_index_of_first_users_group = 36
 
     # 112,800 training imgs -->  1128 shards X 100 imgs/shard
