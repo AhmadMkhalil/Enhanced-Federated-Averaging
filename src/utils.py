@@ -83,7 +83,8 @@ def get_dataset(args):
                     user_groups = emnist_noniid_unequal(train_dataset, args.num_users, args.samples_distribution_type)
                 else:
                     # Chose euqal splits for every user
-                    user_groups = emnist_noniid(train_dataset, args.num_users, args.number_of_classes_of_half_of_user)
+                    user_groups = emnist_noniid(train_dataset, args.num_users, args.number_of_classes_of_half_of_user,
+                                                args.ratio_of_first_users_group, args.num_classes)
         else:
             data_dir = '../data/emnist-byclass/'
             train_dataset = datasets.EMNIST(data_dir, split="byclass", train=True, download=True,

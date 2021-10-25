@@ -8,10 +8,11 @@ if __name__ == '__main__':
     my_path = os.getcwd()
     dataset = 'emnist-balanced'
     iidness = 'noniid'
-    avg_types = ['avg_n_classes', 'avg_n_samples', 'avg']
-    ratios = [25, 50, 75]
-    # number_of_classes_of_half_of_user = [0, 1, 2, 3, 4, 6]
-    number_of_classes_of_half_of_user = [1]
+    avg_types = ['avg_n_classes', 'avg_n_samples']
+    ratios = [50]
+    number_of_classes_of_half_of_user = [1, 2, 3, 4, 6]
+    # ratios = [25, 50, 75]
+    # number_of_classes_of_half_of_user = [1, 6]
 
     epochs = 50
     for avg_type in avg_types:

@@ -8,13 +8,14 @@ if __name__ == '__main__':
     my_path = os.getcwd()
     dataset = 'emnist-balanced'
     iidness = 'noniid'
-    avg_types = ['avg', 'avg_n_classes', 'avg_n_samples']
-    # number_of_classes_of_half_of_user = [0, 1, 2, 3, 4, 6]
-    number_of_classes_of_half_of_user = [1]
+    avg_types = ['avg_n_classes', 'avg_n_samples']
     avg_test_accuracy, avg_n_classes_test_accuracy, avg_n_samples_test_accuracy = [], [], []
     avg_test_loss, avg_n_classes_test_loss, avg_n_samples_test_loss = [], [], []
     epochs = 50
-    ratios = [25, 50, 75]
+    ratios = [50]
+    number_of_classes_of_half_of_user = [1, 2, 3, 4, 6]
+    # ratios = [25, 50, 75]
+    # number_of_classes_of_half_of_user = [1, 6]
     for ratio in ratios:
         for class_dist in number_of_classes_of_half_of_user:
             write_to_summary_path = f'{my_path}/{dataset}/{iidness}/{epochs}/{class_dist}/{ratio}'
@@ -25,13 +26,13 @@ if __name__ == '__main__':
                 with open(files[0], 'r') as stream:
                     try:
                         data = yaml.safe_load(stream)
+                        # if i == 0:
+                        #     avg_test_accuracy = data['final_avg_test_accuracy']
+                        #     avg_test_loss = data['final_avg_test_loss']
                         if i == 0:
-                            avg_test_accuracy = data['final_avg_test_accuracy']
-                            avg_test_loss = data['final_avg_test_loss']
-                        elif i == 1:
                             avg_n_classes_test_accuracy = data['final_avg_test_accuracy']
                             avg_n_classes_test_loss = data['final_avg_test_loss']
-                        else:
+                        elif i == 1:
                             avg_n_samples_test_accuracy = data['final_avg_test_accuracy']
                             avg_n_samples_test_loss = data['final_avg_test_loss']
 
@@ -44,8 +45,8 @@ if __name__ == '__main__':
                 # Plot Loss curve
                 plt.figure()
                 plt.title('Testing Loss vs Communication rounds')
-                plt.plot(range(len(avg_test_loss)), avg_test_loss, color='r', linestyle='solid', marker='2',
-                            label="avg")
+                # plt.plot(range(len(avg_test_loss)), avg_test_loss, color='r', linestyle='solid', marker='2',
+                #            label="avg")
                 plt.plot(range(len(avg_n_classes_test_loss)), avg_n_classes_test_loss, color='g', linestyle='solid', marker='2',
                          label="avg_n_classes")
                 plt.plot(range(len(avg_n_samples_test_loss)), avg_n_samples_test_loss, color='b', linestyle='solid', marker='2',
@@ -58,8 +59,8 @@ if __name__ == '__main__':
                 # Plot Testing Accuracy vs Communication rounds
                 plt.figure()
                 plt.title('Testing Accuracy vs Communication rounds')
-                plt.plot(range(len(avg_test_accuracy)), avg_test_accuracy, color='r', linestyle='solid', marker='2',
-                         label="avg")
+                # plt.plot(range(len(avg_test_accuracy)), avg_test_accuracy, color='r', linestyle='solid', marker='2',
+                #          label="avg")
                 plt.plot(range(len(avg_n_classes_test_accuracy)), avg_n_classes_test_accuracy, color='g', linestyle='solid', marker='2',
                          label="avg_n_classes")
                 plt.plot(range(len(avg_n_samples_test_accuracy)), avg_n_samples_test_accuracy, color='b', linestyle='solid', marker='2',

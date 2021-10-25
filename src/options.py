@@ -9,8 +9,8 @@ def args_parser():
     parser = argparse.ArgumentParser()
 
     # federated arguments (Notation for the arguments followed from paper)
-    parser.add_argument('--epochs', type=int, default=1,
-                        help="number of rounds of training")
+    parser.add_argument('--epochs', type=int, default=5,
+                        help="number of global rounds of training")
     parser.add_argument('--num_users', type=int, default=47,
                         help="number of users: K")
     parser.add_argument('--frac', type=float, default=0.1,
@@ -66,6 +66,8 @@ def args_parser():
     parser.add_argument('--seed', type=int, default=1, help='random seed')
     parser.add_argument('--avg_type', type=str, default='avg_n_classes', help='average type: avg_n_samples, '
                                                                               'avg_n_classes')
+    parser.add_argument('--ratio_of_first_users_group', type=str, default='0.5', help='ratio_of_first_users_group: '
+                                                                                      '0.25, 0.5, 0.75')
     parser.add_argument('--samples_distribution_type', type=str, default='sequential',
                         help='samples distribution type: '
                              'random, sequential')

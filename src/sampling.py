@@ -158,13 +158,22 @@ def emnist_iid(dataset, num_users):
     return dict_users
 
 
-def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
+def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user, ratio_of_first_users_group,
+                  num_classes):  ## focus here please
     """
     Sample non-I.I.D client data from MNIST dataset
     :param dataset:
     :param num_users:
     :return:
     """
+    # default case 0.5
+    last_index_of_first_users_group = 23
+
+    if ratio_of_first_users_group == 0.25:
+        last_index_of_first_users_group = 12
+    elif ratio_of_first_users_group == 0.75:
+        last_index_of_first_users_group = 36
+
     # 112,800 training imgs -->  1128 shards X 100 imgs/shard
     num_shards, num_imgs = 1128, 100
     idx_shard = [i for i in range(num_shards)]
@@ -197,10 +206,10 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         # first half of the users
         # divide and assign one class for each one of the first half of users
         already_gotten_classes = []
-        for i in range(23):
-            rand_class = random.randint(0, 22)  # new
+        for i in range(last_index_of_first_users_group):  # 12, 36
+            rand_class = random.randint(0, last_index_of_first_users_group - 1)  # new
             while rand_class in already_gotten_classes:  # new
-                rand_class = random.randint(0, 22)  # new
+                rand_class = random.randint(0, last_index_of_first_users_group - 1)  # new
             already_gotten_classes.append(rand_class)  # new
             list_of_shards = []
             starting_point = rand_class * 2 * 12  # new
@@ -219,7 +228,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         # remove the already distributed idxs (and their classes to avoid overlapping)
         #### to be applied in all places
         list_of_removed_classes = []
-        for j in range(0, 23):
+        for j in range(0, last_index_of_first_users_group):  # 12, 36
             for i in set(dict_users[j]):
                 list_of_removed_classes.append(int(dataset.targets[int(i)]))
         set_of_removed_classes = set(list_of_removed_classes)
@@ -231,7 +240,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         #### to be applied in all places
 
         # distribute the iid across all rest users
-        for i in range(23, 47):
+        for i in range(last_index_of_first_users_group, num_classes):  # 12, 36
             dict_users[i] = set(np.random.choice(all_idxs, num_items,
                                                  replace=False))
 
@@ -291,7 +300,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         # remove the already distributed idxs
         #### to be applied in all places
         list_of_removed_classes = []
-        for j in range(0, 23):
+        for j in range(0, last_index_of_first_users_group):
             for i in set(dict_users[j]):
                 list_of_removed_classes.append(int(dataset.targets[int(i)]))
         set_of_removed_classes = set(list_of_removed_classes)
@@ -302,7 +311,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         all_idxs = list(set(all_idxs) - set(to_be_deleted))
         #### to be applied in all places
         # distribute the iid across all rest users
-        for i in range(23, 47):
+        for i in range(last_index_of_first_users_group, num_classes):
             dict_users[i] = set(np.random.choice(all_idxs, num_items,
                                                  replace=False))
 
@@ -317,7 +326,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         dict_users[1] = np.concatenate((dict_users[1], idxs[5200:5600]), axis=0)
         dict_users[1] = np.concatenate((dict_users[1], idxs[7200:7600]), axis=0)
 
-        for i in range(2, 23):
+        for i in range(2, last_index_of_first_users_group):
             dict_users[i] = np.concatenate((dict_users[i], idxs[i * 2400 + 800:i * 2400 + 800 + 400]), axis=0)
             dict_users[i] = np.concatenate((dict_users[i], idxs[(i + 1) * 2400 + 400:(i + 1) * 2400 + 400 + 400]),
                                            axis=0)
@@ -329,7 +338,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         # remove the already distributed idxs
         #### to be applied in all places
         list_of_removed_classes = []
-        for j in range(0, 23):
+        for j in range(0, last_index_of_first_users_group):
             for i in set(dict_users[j]):
                 list_of_removed_classes.append(int(dataset.targets[int(i)]))
         set_of_removed_classes = set(list_of_removed_classes)
@@ -340,7 +349,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         all_idxs = list(set(all_idxs) - set(to_be_deleted))
         #### to be applied in all places
         # distribute the iid across all rest users
-        for i in range(23, 47):
+        for i in range(last_index_of_first_users_group, num_classes):
             dict_users[i] = set(np.random.choice(all_idxs, num_items,
                                                  replace=False))
 
@@ -360,7 +369,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         dict_users[2] = np.concatenate((dict_users[2], idxs[9900:10200]), axis=0)
         dict_users[2] = np.concatenate((dict_users[2], idxs[12000:12300]), axis=0)
 
-        for i in range(3, 23):
+        for i in range(3, last_index_of_first_users_group):
             dict_users[i] = np.concatenate((dict_users[i], idxs[i * 2400 + 900:i * 2400 + 900 + 300]), axis=0)
             dict_users[i] = np.concatenate((dict_users[i], idxs[(i + 1) * 2400 + 600:(i + 1) * 2400 + 600 + 300]),
                                            axis=0)
@@ -375,7 +384,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         # remove the already distributed idxs
         #### to be applied in all places
         list_of_removed_classes = []
-        for j in range(0, 23):
+        for j in range(0, last_index_of_first_users_group):
             for i in set(dict_users[j]):
                 list_of_removed_classes.append(int(dataset.targets[int(i)]))
         set_of_removed_classes = set(list_of_removed_classes)
@@ -386,7 +395,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         all_idxs = list(set(all_idxs) - set(to_be_deleted))
         #### to be applied in all places
         # distribute the iid across all rest users
-        for i in range(23, 47):
+        for i in range(last_index_of_first_users_group, num_classes):
             dict_users[i] = set(np.random.choice(all_idxs, num_items,
                                                  replace=False))
 
@@ -428,7 +437,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         dict_users[4] = np.concatenate((dict_users[4], idxs[19400:19600]), axis=0)
         dict_users[4] = np.concatenate((dict_users[4], idxs[21600:21800]), axis=0)
 
-        for i in range(5, 23):
+        for i in range(5, last_index_of_first_users_group):  # 12, 36
             dict_users[i] = np.concatenate((dict_users[i], idxs[i * 2400 + 1000:i * 2400 + 1000 + 200]), axis=0)
             dict_users[i] = np.concatenate((dict_users[i], idxs[(i + 1) * 2400 + 800:(i + 1) * 2400 + 800 + 200]),
                                            axis=0)
@@ -447,7 +456,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         # remove the already distributed idxs
         #### to be applied in all places
         list_of_removed_classes = []
-        for j in range(0, 23):
+        for j in range(0, last_index_of_first_users_group):  # 12, 36
             for i in set(dict_users[j]):
                 list_of_removed_classes.append(int(dataset.targets[int(i)]))
         set_of_removed_classes = set(list_of_removed_classes)
@@ -458,7 +467,7 @@ def emnist_noniid(dataset, num_users, number_of_classes_of_half_of_user):
         all_idxs = list(set(all_idxs) - set(to_be_deleted))
         #### to be applied in all places
         # distribute the iid across all rest users
-        for i in range(23, 47):
+        for i in range(last_index_of_first_users_group, num_classes):  # 12, 36
             dict_users[i] = set(np.random.choice(all_idxs, num_items,
                                                  replace=False))
 

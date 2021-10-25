@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     # define paths
     path_project = os.path.abspath('..')
-    logger = None# SummaryWriter('../logs')
+    logger = None  # SummaryWriter('../logs')
 
     args = args_parser()
     exp_details(args)
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     print_every = 1
     val_loss_pre, counter = 0, 0
 
-    for epoch in tqdm(range(args.epochs)):
+    for epoch in tqdm(range(args.epochs)):  # training rounds
         local_weights, local_losses = [], []
         data, data_classes, samples_per_class = [], [], []
         classes = []
@@ -192,7 +192,8 @@ if __name__ == '__main__':
         iidness = "extreme"
     my_path = os.getcwd()
     full_path = '{}/../save/{}/{}/{}/{}/{}/{}'.format(my_path, args.dataset, iidness,
-                                                   args.avg_type, args.epochs, args.number_of_classes_of_half_of_user, current_time)
+                                                      args.avg_type, args.epochs,
+                                                      args.number_of_classes_of_half_of_user, current_time)
     os.makedirs(full_path)
 
     # Plot Loss curve
