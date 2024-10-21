@@ -1,113 +1,95 @@
-# This work is based on "https://github.com/AshwinRJ/Federated-Learning-PyTorch.git", however, multiple changes done and many features have been added on top of it in order to fit my reseacher topic.
+Here's a cleaner and more polished version of your README file with improved formatting and structure, eliminating the need for user input prompts:
 
-# Federated-Learning (PyTorch)
+---
 
-Implementation of the vanilla federated learning paper : [Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629).
+# Federated Learning (PyTorch)
 
+This repository is based on the original work from [AshwinRJ/Federated-Learning-PyTorch](https://github.com/AshwinRJ/Federated-Learning-PyTorch), with significant modifications and added features to fit the scope of my research topic on **Federated Learning**.
 
-Experiments are produced on MNIST, Fashion MNIST and CIFAR10 (both IID and non-IID). In case of non-IID, the data amongst the users can be split equally or unequally.
+## Overview
+This repository showcases federated learning experiments using the MNIST, Fashion MNIST, and CIFAR-10 datasets under both IID (Independent and Identically Distributed) and non-IID conditions. It allows for flexible data distribution among users, supporting both equal and unequal splits. Simple yet effective models such as MLP (Multi-Layer Perceptron) and CNN (Convolutional Neural Networks) are employed to assess the performance of federated learning.
 
-Since the purpose of these experiments are to illustrate the effectiveness of the federated learning paradigm, only simple models such as MLP and CNN are used.
+The primary extension beyond the original implementation is the introduction of advanced data distribution schemes, including the ability to simulate overlapping data samples among users and control the degree of sample overlap. These features provide a more nuanced exploration of federated learning in heterogeneous environments.
 
-## Requirments
-Install all the packages from requirments.txt
-* Python3
-* Pytorch
-* Torchvision
+## Key Features and Modifications
+- **Label-Aware Aggregation** method, developed as part of my research, to enhance federated learning with non-IID data distributions.
+- Additional hyperparameter tuning options.
+- Support for unequal data splits across users.
+- Improved logging and visualization.
+
+---
+
+## Requirements
+Ensure you have the following dependencies installed. All required packages are listed in `requirements.txt`:
+
+- Python 3.x
+- PyTorch
+- Torchvision
+
+To install the dependencies, run:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
 
 ## Data
-* Download train and test datasets manually or they will be automatically downloaded from torchvision datasets.
-* Experiments are run on Mnist, Fashion Mnist and Cifar.
-* To use your own dataset: Move your dataset to data directory and write a wrapper on pytorch dataset class.
 
-## Running the experiments
-The baseline experiment trains the model in the conventional way.
+- The datasets (MNIST, Fashion MNIST, CIFAR-10) are automatically downloaded via `torchvision.datasets`. Alternatively, you can manually place them in the `data/` directory.
+- To use your own dataset, move it to the `data/` folder and create a custom data wrapper using PyTorch's Dataset class.
 
-* To run the baseline experiment with MNIST on MLP using CPU:
-```
+---
+
+## Running the Experiments
+
+### Baseline Experiment
+The baseline experiment trains the model in a traditional (non-federated) manner.
+
+#### Example: Running a Baseline Experiment on MNIST with MLP
+```bash
 python src/baseline_main.py --model=mlp --dataset=mnist --epochs=10
 ```
-* Or to run it on GPU (eg: if gpu:0 is available):
-```
+
+#### Example: Running the Baseline Experiment on GPU
+```bash
 python src/baseline_main.py --model=mlp --dataset=mnist --gpu=0 --epochs=10
 ```
------
 
-Federated experiment involves training a global model using many local models.
+### Federated Experiment
+Federated experiments involve training a global model by aggregating updates from local models trained on distributed user data.
 
-* To run the federated experiment with CIFAR on CNN (IID):
-```
+#### Example: Running a Federated Experiment on CIFAR-10 with CNN (IID)
+```bash
 python src/federated_main.py --model=cnn --dataset=cifar --gpu=0 --iid=1 --epochs=10
 ```
-* To run the same experiment under non-IID condition:
-```
+
+#### Example: Running a Federated Experiment on CIFAR-10 with CNN (non-IID)
+```bash
 python src/federated_main.py --model=cnn --dataset=cifar --gpu=0 --iid=0 --epochs=10
 ```
 
-You can change the default values of other parameters to simulate different conditions. Refer to the options section.
+You can customize other parameters to simulate different conditions. Refer to the options section below for details.
 
-## Options
-The default values for various paramters parsed to the experiment are given in ```options.py```. Details are given some of those parameters:
+---
 
-* ```--dataset:```  Default: 'mnist'. Options: 'mnist', 'fmnist', 'cifar'
-* ```--model:```    Default: 'mlp'. Options: 'mlp', 'cnn'
-* ```--gpu:```      Default: None (runs on CPU). Can also be set to the specific gpu id.
-* ```--epochs:```   Number of rounds of training.
-* ```--lr:```       Learning rate set to 0.01 by default.
-* ```--verbose:```  Detailed log outputs. Activated by default, set to 0 to deactivate.
-* ```--seed:```     Random Seed. Default set to 1.
+## Options and Hyperparameters
 
-#### Federated Parameters
-* ```--iid:```      Distribution of data amongst users. Default set to IID. Set to 0 for non-IID.
-* ```--num_users:```Number of users. Default is 100.
-* ```--frac:```     Fraction of users to be used for federated updates. Default is 0.1.
-* ```--local_ep:``` Number of local training epochs in each user. Default is 10.
-* ```--local_bs:``` Batch size of local updates in each user. Default is 10.
-* ```--unequal:```  Used in non-iid setting. Option to split the data amongst users equally or unequally. Default set to 0 for equal splits. Set to 1 for unequal splits.
+The key configurable parameters can be found and modified in `options.py`. Below are some frequently used options:
 
-## Results on MNIST
-#### Baseline Experiment:
-The experiment involves training a single model in the conventional way.
+### General Parameters
+- `--dataset`: Dataset to be used. Default: `mnist`. Options: `mnist`, `fmnist`, `cifar`.
+- `--model`: Model architecture. Default: `mlp`. Options: `mlp`, `cnn`.
+- `--gpu`: GPU ID. Set to `None` (default) for CPU execution.
+- `--epochs`: Number of training epochs. Default: `10`.
+- `--lr`: Learning rate. Default: `0.01`.
+- `--verbose`: Detailed logging. Default: `1` (enabled). Set to `0` to disable.
+- `--seed`: Random seed for reproducibility. Default: `1`.
 
-Parameters: <br />
-* ```Optimizer:```    : SGD 
-* ```Learning Rate:``` 0.01
-
-```Table 1:``` Test accuracy after training for 10 epochs:
-
-| Model | Test Acc |
-| ----- | -----    |
-|  MLP  |  92.71%  |
-|  CNN  |  98.42%  |
-
-----
-
-#### Federated Experiment:
-The experiment involves training a global model in the federated setting.
-
-Federated parameters (default values):
-* ```Fraction of users (C)```: 0.1 
-* ```Local Batch size  (B)```: 10 
-* ```Local Epochs      (E)```: 10 
-* ```Optimizer            ```: SGD 
-* ```Learning Rate        ```: 0.01 <br />
-
-```Table 2:``` Test accuracy after training for 10 global epochs with:
-
-| Model |    IID   | Non-IID (equal)|
-| ----- | -----    |----            |
-|  MLP  |  88.38%  |     73.49%     |
-|  CNN  |  97.28%  |     75.94%     |
-
-
-## Further Readings
-### Papers:
-* [Federated Learning: Challenges, Methods, and Future Directions](https://arxiv.org/abs/1908.07873)
-* [Communication-Efficient Learning of Deep Networks from Decentralized Data](https://arxiv.org/abs/1602.05629)
-* [Deep Learning with Differential Privacy](https://arxiv.org/abs/1607.00133)
-
-### Blog Posts:
-* [CMU MLD Blog Post: Federated Learning: Challenges, Methods, and Future Directions](https://blog.ml.cmu.edu/2019/11/12/federated-learning-challenges-methods-and-future-directions/)
-* [Leaf: A Benchmark for Federated Settings (CMU)](https://leaf.cmu.edu/)
-* [TensorFlow Federated](https://www.tensorflow.org/federated)
-* [Google AI Blog Post](https://ai.googleblog.com/2017/04/federated-learning-collaborative.html)
+### Federated Learning Parameters
+- `--iid`: Data distribution among users. Default: `1` (IID). Set to `0` for non-IID distribution.
+- `--num_users`: Number of clients (users) participating in federated learning. Default: `100`.
+- `--frac`: Fraction of clients used for each round of federated updates. Default: `0.1`.
+- `--local_ep`: Number of local epochs (training iterations) per client. Default: `10`.
+- `--local_bs`: Batch size for local training. Default: `10`.
+- `--unequal`: Set to `1` for unequal data splits among users (non-IID). Default: `0` (equal splits).
