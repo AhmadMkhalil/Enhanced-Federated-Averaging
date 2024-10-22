@@ -1,7 +1,3 @@
-Here's a cleaner and more polished version of your README file with improved formatting and structure, eliminating the need for user input prompts:
-
----
-
 # Federated Learning (PyTorch)
 
 This repository is based on the original work from [AshwinRJ/Federated-Learning-PyTorch](https://github.com/AshwinRJ/Federated-Learning-PyTorch), with significant modifications and added features to fit the scope of my research topic on **Federated Learning**.
